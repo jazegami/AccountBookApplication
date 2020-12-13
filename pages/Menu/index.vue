@@ -2,11 +2,16 @@
   <v-col cols="12">
   <v-card>
     <v-col cols=3>
-      <v-card-title>家計簿アプリ</v-card-title>
+      <v-card-title>家計簿メニュー</v-card-title>
     </v-col>
     <v-col cols=2>
-    <v-btn block to="/Menu">
-      開始
+    <v-btn block>
+      データ入力
+    </v-btn>
+    </v-col>
+    <v-col cols=2>
+    <v-btn block>
+      家計簿表示
     </v-btn>
     </v-col>
   </v-card>
