@@ -5,7 +5,7 @@
       <v-card-title>家計簿アプリ</v-card-title>
     </v-col>
     <v-col cols=2>
-    <v-btn block to="/Menu">
+    <v-btn block to="/menu">
       開始
     </v-btn>
     </v-col>

@@ -5,7 +5,7 @@
       <v-card-title>家計簿メニュー</v-card-title>
     </v-col>
     <v-col cols=2>
-    <v-btn block>
+    <v-btn block to="/menu/input">
       データ入力
     </v-btn>
     </v-col>
