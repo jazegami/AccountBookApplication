@@ -1,5 +1,7 @@
 <template>
+<v-app>
   <v-col cols="12">
+  <v-form ref="inputData_form">
   <v-card>
     <v-col cols=3>
       <v-card-title>家計簿データ入力</v-card-title>
@@ -10,16 +12,18 @@
       </v-col>
       <v-col cols=2 md=2>
         <v-text-field
+          v-model="params.year"
           label="年"
           value=""
-          :rules="[required, limit_length]">
+          :rules="[required, year_length]"
           counter="4"
-        </v-text-field>
+        ></v-text-field>
       </v-col>
       <v-col cols=2 md=2>
         <v-select
-          v-model="select"
+          v-model="params.month"
           value="1"
+          :rules="[required]"
           :items="monthItems"
           label="月"
         ></v-select>
@@ -31,7 +35,8 @@
       </v-col>
       <v-col cols=2>
         <v-select
-          v-model="select"
+          v-model="params.itemClassification"
+          :rules="[required]"
           :items="items"
         ></v-select>
       </v-col>
@@ -42,10 +47,12 @@
       </v-col>
       <v-col cols=2 md=10>
         <v-text-field
+          v-model="params.itemClassificationName"
           label="分類名"
           value=""
-          :rules="[required, limit_length_255]">
-          counter="4"
+          :rules="[item_name_required, limit_length_32]"
+          :disabled="inputFlg"
+          counter="255"
         ></v-text-field>
       </v-col>
     </v-row>
@@ -55,9 +62,10 @@
       </v-col>
       <v-col cols=2 md=2>
         <v-text-field
+          v-model="params.amount"
           label="金額"
           value=""
-          :rules="[required, limit_length_255]">
+          :rules="[required, limit_length_10]">
           counter="4"
         ></v-text-field>
       </v-col>
@@ -68,6 +76,7 @@
       </v-col>
       <v-col cols=2 md=10>
         <v-text-field
+          v-model="params.memo"
           label="メモ"
           value=""
         ></v-text-field>
@@ -75,7 +84,7 @@
     </v-row>
     <v-row>
       <v-col cols=2 md=1>
-        <v-btn block>
+        <v-btn block elevation="18" @click="inputData">
           登録
         </v-btn>
       </v-col>
@@ -86,16 +95,30 @@
       </v-col>
     </v-row>
   </v-card>
+  </v-form>
   </v-col>
+</v-app>
 </template>
 
 <script>
 export default {
+  async asyncData (context) {
+    const response = await context.$axios.get('/api/mysql/getItem')
+    const resData = []
+    for (const res of response.data) {
+      resData.push(res)
+    }
+    return {
+      items: resData
+    }
+  },
   data () {
     return {
-      required: value => !!value || '必ず入力してください', // 入力必須の制約
-      limit_length: value => value.length <= 4 || '4文字以内で入力してください', // 文字数の制約
-      limit_length_255: value => value.length <= 255 || '255文字以内で入力してください', // 文字数の制約
+      required: value => !!value || '必須項目です',
+      item_name_required: value => (!!value || this.params.itemClassification !== 'その他') || '必須項目です',
+      year_length: value => value.length === 4 || '西暦の4桁で入力してください。',
+      limit_length_32: value => value.length <= 32 || '32文字以内で入力してください',
+      limit_length_10: value => value.length <= 10 || '10桁以内で入力してください',
       monthItems: [
         1,
         2,
@@ -110,17 +133,34 @@ export default {
         11,
         12
       ],
-      items: [
-        'その他'
-      ]
+      classificationList: '',
+      items: [],
+      params: {
+        year: '',
+        month: '',
+        itemClassification: '',
+        itemClassificationName: '',
+        amount: '',
+        memo: ''
+      }
     }
   },
   methods: {
-    async asyncData (context) {
-      const response = await context.$axios.get('/api/mysql')
-      return {
-        message: response
+    async inputData () {
+      if (this.$refs.inputData_form.validate()) {
+        const response = await this.$axios.$post('/api/mysql/inputData', this.params)
+        alert(response)
+      } else {
+        alert('正しい値を入力してください')
       }
+    }
+  },
+  computed: {
+    inputFlg () {
+      if (this.params.itemClassification === 'その他') {
+        return false
+      }
+      return true
     }
   }
 }
