@@ -12,14 +12,3 @@
   </v-card>
   </v-col>
 </template>
-
-<script>
-export default {
-  async asyncData (context) {
-    const response = await context.$axios.get('/api/mysql')
-    return {
-      message: response
-    }
-  }
-}
-</script>
