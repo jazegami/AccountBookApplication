@@ -3,14 +3,12 @@
   <v-col cols="12">
   <v-form ref="inputData_form">
   <v-card>
-    <v-col cols=3>
-      <v-card-title>家計簿データ入力</v-card-title>
-    </v-col>
+    <v-card-title>家計簿データ入力</v-card-title>
     <v-row>
       <v-col cols=2 md=1>
         <v-subheader>日付</v-subheader>
       </v-col>
-      <v-col cols=2 md=2>
+      <v-col cols=1 md=1>
         <v-text-field
           v-model="params.year"
           label="年"
@@ -19,7 +17,7 @@
           counter="4"
         ></v-text-field>
       </v-col>
-      <v-col cols=2 md=2>
+      <v-col cols=1 md=1>
         <v-select
           v-model="params.month"
           value="1"
@@ -65,7 +63,7 @@
           v-model="params.amount"
           label="金額"
           value=""
-          :rules="[required, limit_length_10]">
+          :rules="[required, limit_length_10, number_check]">
           counter="4"
         ></v-text-field>
       </v-col>
@@ -115,10 +113,11 @@ export default {
   data () {
     return {
       required: value => !!value || '必須項目です',
-      item_name_required: value => (!!value || this.params.itemClassification !== 'その他') || '必須項目です',
+      item_name_required: value => (!!value || this.params.itemClassification !== 'その他') || '「その他」を選択した場合、必須項目です',
       year_length: value => value.length === 4 || '西暦の4桁で入力してください。',
       limit_length_32: value => value.length <= 32 || '32文字以内で入力してください',
       limit_length_10: value => value.length <= 10 || '10桁以内で入力してください',
+      number_check: value => !value.search(/^[-]?[0-9]+$/) || '数値で入力してください',
       monthItems: [
         1,
         2,
@@ -150,8 +149,6 @@ export default {
       if (this.$refs.inputData_form.validate()) {
         const response = await this.$axios.$post('/api/mysql/inputData', this.params)
         alert(response)
-      } else {
-        alert('正しい値を入力してください')
       }
     }
   },

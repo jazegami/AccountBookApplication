@@ -1,89 +1,84 @@
 <template>
-<v-app>
-  <v-form ref="searchData_form">
-  <v-col>
-  <v-card>
-    <v-col>
+  <v-app>
+    <v-col cols="12">
+    <v-form ref="searchData_form">
+    <v-card>
       <v-card-title>家計簿表示</v-card-title>
+        <v-card-text>
+          <v-row>
+            <v-col cols=1 md=1>
+              <v-subheader>日付</v-subheader>
+            </v-col>
+            <v-col cols=1 md=1>
+              <v-text-field
+                v-model="params.year"
+                label="年"
+                :rules="[required, year_length]"
+                counter="4"
+              ></v-text-field>
+            </v-col>
+            <v-col cols=1 md=1>
+              <v-select
+                v-model="params.month"
+                value="1"
+                :rules="[required]"
+                :items="monthItems"
+                label="月"
+              ></v-select>
+            </v-col>
+          </v-row>
+          <v-row>
+            <v-col cols=2 md=1>
+              <v-subheader>内容分類</v-subheader>
+            </v-col>
+            <v-col cols=2>
+              <v-select
+                v-model="params.itemClassification"
+                :items="items"
+              ></v-select>
+            </v-col>
+            <v-col cols=2>
+              <v-btn block elevation="18" @click="searchData">
+                検索
+              </v-btn>
+            </v-col>
+          </v-row>
+          <v-row>
+            <v-col>
+              <v-data-table
+                :headers="headers"
+                :items="item_data"
+                class="elevation-18"
+              >
+                <template v-slot:item.action="{ item }">
+                  <v-btn small class="elevation-18" @click="openDialog(item)">
+                    編集
+                  </v-btn>
+                  <v-btn small class="elevation-18" @click="clickDelete(item)">
+                    削除
+                  </v-btn>
+                </template>
+              </v-data-table>
+              <dialogCard ref="dia"/>
+            </v-col>
+          </v-row>
+          <v-row>
+            <v-col cols=2 md=1>
+              <v-btn block to="/menu">
+                メニューへ戻る
+              </v-btn>
+            </v-col>
+            <v-col cols=2 md=1>
+              <v-btn block to="/menu/input">
+                新規登録
+              </v-btn>
+            </v-col>
+          </v-row>
+        </v-card-text>
+      </v-card>
+    </v-form>
     </v-col>
-    <v-row>
-      <v-col>
-        <v-subheader>日付</v-subheader>
-      </v-col>
-      <v-col>
-        <v-text-field
-          v-model="params.year"
-          label="年"
-          :rules="[required, year_length]"
-          counter="4"
-        ></v-text-field>
-      </v-col>
-      <v-col>
-        <v-select
-          v-model="params.month"
-          value="1"
-          :rules="[required]"
-          :items="monthItems"
-          label="月"
-        ></v-select>
-      </v-col>
-    </v-row>
-    <v-row>
-      <v-col cols=2 md=1>
-        <v-subheader>内容分類</v-subheader>
-      </v-col>
-      <v-col cols=2>
-        <v-select
-          v-model="params.itemClassification"
-          :items="items"
-        ></v-select>
-      </v-col>
-      <v-col cols=2>
-        <v-btn block elevation="18" @click="searchData">
-          検索
-        </v-btn>
-      </v-col>
-    </v-row>
-    <v-row>
-    <v-col>
-    <v-data-table
-      :headers="headers"
-      :items="item_data"
-      class="elevation-18"
-    >
-      <template v-slot:item.action="{ item }">
-        <v-btn small class="elevation-18" @click="openDialog(item)">
-           編集
-        </v-btn>
-        <v-btn small class="elevation-18" @click="clickDelete(item)">
-           削除
-        </v-btn>
-      </template>
-    </v-data-table>
-    <dialogCard ref="dia"/>
-    </v-col>
-    </v-row>
-    <v-row>
-      <v-col cols=2 md=1>
-        <v-btn block to="/menu">
-          メニューへ戻る
-        </v-btn>
-      </v-col>
-      <v-col cols=2 md=1>
-        <v-btn block to="/menu/input">
-          新規登録
-        </v-btn>
-      </v-col>
-      <v-col cols=2 md=1>
-        <v-btn block elevation="18" @click="searchData">
-          検索
-        </v-btn>
-      </v-col>
-    </v-row>
-  </v-card>
-  </v-col>
-  </v-form>
-</v-app>
+  </v-app>
 </template>
 
 <script>
@@ -157,8 +152,6 @@ export default {
       if (this.$refs.searchData_form.validate()) {
         const response = await this.$axios.$post('/api/mysql/itemData', this.params)
         this.item_data = response
-      } else {
-        alert('正しい値を入力してください')
       }
     },
     async clickDelete (item) {
