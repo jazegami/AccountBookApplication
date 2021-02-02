@@ -26,7 +26,6 @@ app.get('/mysql/getItem', (req, res, next) => {
     res.header('Content-Type', 'application/json; charset=utf-8')
     res.send(ret);
   });
-  console.log('test終了');
   connection.end();
 })
 module.exports = {
@@ -164,20 +163,15 @@ app.post('/mysql/itemData', (req, res, next) => {
   var sql = '';
   var query=[];
   var ret=[];
-  if (!param.itemClassification) {
+  if (!param.itemClassification || param.itemClassification === '全て') {
     sql = 'SELECT * from accountbook_table where year = ? and month = ?;';
-    console.log('rwe');
     query.push(param.year);
     query.push(param.month);
-    console.log('rwe');
   } else {
-    console.log('rwe');
     sql = 'SELECT * from accountbook_table where year = ? and month = ? and item = ?;';
-    console.log('rwe');
     query.push(param.year);
     query.push(param.month);
     query.push(param.itemClassification);
-    console.log('rwe');
   }
   console.log('実行SQL' + sql);
   connection.connect();
@@ -201,7 +195,6 @@ app.post('/mysql/itemData', (req, res, next) => {
     res.header('Content-Type', 'application/json; charset=utf-8')
     res.send(dat);
   });
-  console.log('test終了');
   connection.end();
 })
 module.exports = {

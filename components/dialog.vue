@@ -1,32 +1,33 @@
 <template>
   <v-dialog v-model="dialog">
   <v-card>
-    <v-card-title>Component Title</v-card-title>
-    <v-card-text>
-      <v-container>
-        <v-row>
-          <v-col cols="12">
-            <v-text-field label="data_id" v-model="updateParams.dataId" required></v-text-field>
-          </v-col>
-          <v-col cols="12">
-          <v-select
-            label="分類"
-            v-model="updateParams.item"
-            :items="items"
-          ></v-select>
-          </v-col>
-          <v-col cols="12">
-            <v-text-field label="分類名" v-model="updateParams.item" required></v-text-field>
-          </v-col>
-          <v-col cols="12">
-            <v-text-field label="金額" v-model="updateParams.amount" required></v-text-field>
-          </v-col>
-          <v-col cols="12">
-            <v-text-field label="メモ" v-model="updateParams.memo" required></v-text-field>
-          </v-col>
-        </v-row>
-      </v-container>
-    </v-card-text>
+    <v-form ref="inputData_form">
+      <v-card-title>データの編集</v-card-title>
+      <v-card-text>
+        <v-container>
+          <v-row>
+            <v-col cols="12">
+            <v-select
+              label="分類"
+              v-model="updateParams.itemClassification"
+              :items="items"
+              :rules="[required]"
+            ></v-select>
+            </v-col>
+            <v-col cols="12">
+              <v-text-field
+                label="金額"
+                v-model="updateParams.amount"
+                :rules="[required,numberCheck]"
+              ></v-text-field>
+            </v-col>
+            <v-col cols="12">
+              <v-text-field label="メモ" v-model="updateParams.memo"></v-text-field>
+            </v-col>
+          </v-row>
+        </v-container>
+      </v-card-text>
+    </v-form>
     <v-card-actions>
       <v-spacer></v-spacer>
       <v-btn text color="success" @click="update">
@@ -46,6 +47,8 @@ import axios from 'axios'
 export default {
   data () {
     return {
+      required: value => !!value || '必須項目です',
+      numberCheck: value => !String(value).search(/^[-]?[0-9]+$/) || '数値で入力してください',
       updateParams: {
         dataId: '',
         itemClassification: '',
@@ -78,7 +81,6 @@ export default {
       this.updateParams.memo = item.memo
 
       const response = await axios.get('/api/mysql/getItem')
-      console.log('test')
       for (const res of response.data) {
         console.log(res)
         if (res !== 'その他') {
