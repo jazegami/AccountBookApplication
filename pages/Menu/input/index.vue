@@ -12,7 +12,7 @@
             v-model="params.year"
             label="年"
             value=""
-            :rules="[required, year_length]"
+            :rules="[required, year_length, number_check]"
             counter="4"
           ></v-text-field>
         </v-col>

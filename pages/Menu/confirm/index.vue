@@ -120,10 +120,7 @@ export default {
       ],
       item_data: [],
       required: value => !!value || '必須項目です',
-      item_name_required: value => (!!value || this.params.itemClassification !== 'その他') || '必須項目です',
       year_length: value => value.length === 4 || '西暦の4桁で入力してください。',
-      limit_length_32: value => value.length <= 32 || '32文字以内で入力してください',
-      limit_length_10: value => value.length <= 10 || '10桁以内で入力してください',
       monthItems: [
         1,
         2,
