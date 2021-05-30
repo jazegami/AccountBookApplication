@@ -5,13 +5,7 @@ const app = express();
 
 // 分類項目マスタ取得
 app.get('/mysql/getItem', (req, res, next) => {
-  const mysql = require('mysql');
-  const connection = mysql.createConnection({
-    host : 'localhost',
-    user : 'root',
-    database: 'testdb',
-    password: 'testMysql'
-  });
+  const connection = getMysqlConnection();
   var ret=[];
   connection.connect();
   connection.query('SELECT item_name from item_master;', function(error, results, fields){
@@ -36,13 +30,7 @@ module.exports = {
 
 // 削除
 app.get('/mysql/deleteData/:dataId', (req, res, next) => {
-  const mysql = require('mysql');
-  const connection = mysql.createConnection({
-    host : 'localhost',
-    user : 'root',
-    database: 'testdb',
-    password: 'testMysql'
-  });
+  const connection = getMysqlConnection();
   var ret=[];
   connection.connect();
   connection.query('DELETE from accountbook_table where data_id = ?;', req.params.dataId, function(error, results, fields){
@@ -80,14 +68,8 @@ app.post('/mysql/inputData', (req, res, next) => {
     var itemName = param.itemClassification;
     console.log(itemName);
   }
-  const mysql = require('mysql');
   res.setHeader('Content-Type', 'text/plain');
-  const connection = mysql.createConnection({
-    host : 'localhost',
-    user : 'root',
-    database: 'testdb',
-    password: 'testMysql'
-  });
+  const connection = getMysqlConnection();
   const sql = 'INSERT INTO accountbook_table (year, month, item, amount, memo, insert_date, update_date) VALUES (?, ?, ?, ?, ?, ?, ?);';
   console.log('SQL：' + sql);
   var ret=[];
@@ -121,14 +103,8 @@ module.exports = {
 app.post('/mysql/updateData', (req, res, next) => {
   console.log(req.body);
   const param = req.body;
-  const mysql = require('mysql');
   res.setHeader('Content-Type', 'text/plain');
-  const connection = mysql.createConnection({
-    host : 'localhost',
-    user : 'root',
-    database: 'testdb',
-    password: 'testMysql'
-  });
+  const connection = getMysqlConnection();
   const sql = 'UPDATE accountbook_table SET item = ?, amount = ?, memo = ?, update_date = ? WHERE data_id = ?;';
   console.log('SQL：' + sql);
   var ret=[];
@@ -150,16 +126,10 @@ module.exports = {
 
 // 家計簿の入力データを取得
 app.post('/mysql/itemData', (req, res, next) => {
-  const mysql = require('mysql');
   console.log('実行確認');
   const param = req.body;
   console.log(param);
-  const connection = mysql.createConnection({
-    host : 'localhost',
-    user : 'root',
-    database: 'testdb',
-    password: 'testMysql'
-  });
+  const connection = getMysqlConnection();
   var sql = '';
   var query=[];
   var ret=[];
@@ -200,4 +170,15 @@ app.post('/mysql/itemData', (req, res, next) => {
 module.exports = {
   path: '/api',
   handler: app
+}
+
+function getMysqlConnection() {
+  const mysql = require('mysql');
+  const connection = mysql.createConnection({
+    host : 'localhost',
+    user : 'root',
+    database: 'testdb',
+    password: 'testMysql'
+  });
+  return connection;
 }
