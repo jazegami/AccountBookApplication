@@ -1,7 +1,7 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const app = express();
-
+const test = '';
 
 // 分類項目マスタ取得
 app.get('/mysql/getItem', (req, res, next) => {
