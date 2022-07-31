@@ -47,6 +47,39 @@ module.exports = {
   handler: app
 }
 
+// グラフ:項目毎の累計
+app.get('/mysql/graph/items', (req, res, next) => {
+  console.log('実行確認');
+  const connection = getMysqlConnection();
+  var sql = '';
+  var query=[];
+  var ret=[];
+  sql = 'SELECT item, sum(amount) as totalAmount from accountbook_table group by item;';
+  console.log('実行SQL' + sql);
+  connection.connect();
+  connection.query(sql, function(error, results, fields){
+    if (error) {
+      console.log(error);
+    } 
+    var dat = [];
+    for (const result of results) {
+      var json = {}
+      json.item = result.item;
+      json.totalAmount = result.totalAmount;
+      console.log(json);
+      dat.push(json)
+    }
+    console.log(dat)
+    res.header('Content-Type', 'application/json; charset=utf-8')
+    res.send(dat);
+  });
+  connection.end();
+})
+module.exports = {
+  path: '/api',
+  handler: app
+}
+
 
 // POST用の設定
 app.use(bodyParser.urlencoded({

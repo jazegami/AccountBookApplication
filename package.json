@@ -14,13 +14,20 @@
     "@nuxtjs/axios": "^5.12.2",
     "axios": "^0.21.0",
     "body-parser": "^1.19.0",
+    "chart.js": "^3.8.2",
     "core-js": "^3.6.5",
     "express": "^4.17.1",
+    "luxon": "^2.3.2",
     "moment": "^2.29.1",
     "mysql": "^2.18.1",
     "nuxt": "^2.14.6",
     "oracledb": "^5.0.0",
-    "vue-router": "^3.4.9"
+    "vue-chartjs": "^4.1.1",
+    "vue-ctk-date-time-picker": "^3.0.0-alpha.0",
+    "vue-datetime": "^1.0.0-beta.14",
+    "vue-router": "^3.4.9",
+    "vuetify-datetime-picker": "^2.1.1",
+    "weekstart": "^1.1.0"
   },
   "devDependencies": {
     "@nuxtjs/eslint-config": "^3.1.0",

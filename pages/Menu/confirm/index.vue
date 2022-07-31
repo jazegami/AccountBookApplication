@@ -73,6 +73,11 @@
                 新規登録
               </v-btn>
             </v-col>
+            <v-col cols=2 md=1>
+              <v-btn block to="/menu/graph">
+                グラフ表示
+              </v-btn>
+            </v-col>
           </v-row>
         </v-card-text>
       </v-card>
