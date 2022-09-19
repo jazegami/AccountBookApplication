@@ -69,13 +69,26 @@
               </v-btn>
             </v-col>
             <v-col cols=2 md=1>
-              <v-btn block to="/menu/input">
-                新規登録
+              <v-btn block @click="openGraph()">
+                グラフ表示
               </v-btn>
+              <graphCard ref="gra"/>
             </v-col>
             <v-col cols=2 md=1>
               <v-btn block to="/menu/graph">
-                グラフ表示
+                CSVダウンロード
+              </v-btn>
+            </v-col>
+          </v-row>
+          <v-row>
+            <v-col cols=2 md=1>
+              <v-btn block to="/menu">
+                メニューへ戻る
+              </v-btn>
+            </v-col>
+            <v-col cols=2 md=1>
+              <v-btn block to="/menu/input">
+                新規登録
               </v-btn>
             </v-col>
           </v-row>
@@ -88,9 +101,11 @@
 
 <script>
 import dialogCard from '@/components/dialog'
+import graphCard from '@/components/graph'
 export default {
   components: {
-    dialogCard
+    dialogCard,
+    graphCard
   },
   async asyncData (context) {
     const response = await context.$axios.get('/api/mysql/getItem')
@@ -168,6 +183,9 @@ export default {
     },
     openDialog (item) {
       this.$refs.dia.open(item)
+    },
+    openGraph () {
+      this.$refs.gra.open()
     }
   }
 }
