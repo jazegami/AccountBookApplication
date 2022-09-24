@@ -47,6 +47,41 @@ module.exports = {
   handler: app
 }
 
+// グラフ:月毎の推移
+app.get('/mysql/graph/every/year', (req, res, next) => {
+  console.log('実行確認');
+  const connection = getMysqlConnection();
+  var sql = '';
+  var query=[];
+  var ret=[];
+  sql = 'SELECT year, sum(amount) as totalAmount from accountbook_table group by year;';
+  console.log('実行SQL' + sql);
+  connection.connect();
+  connection.query(sql, function(error, results, fields){
+    if (error) {
+      console.log(error);
+    } 
+    var dat = [];
+    var yearList = [];
+    var amountList = [];
+    for (const result of results) {
+      yearList.push(result.year);
+      amountList.push(result.totalAmount);
+    }
+    var json = {}
+    json.year = yearList;
+    json.totalAmount = amountList;
+    console.log(json);
+    res.header('Content-Type', 'application/json; charset=utf-8')
+    res.send(json);
+  });
+  connection.end();
+})
+module.exports = {
+  path: '/api',
+  handler: app
+}
+
 // グラフ:項目毎の累計
 app.get('/mysql/graph/items', (req, res, next) => {
   console.log('実行確認');
@@ -62,16 +97,18 @@ app.get('/mysql/graph/items', (req, res, next) => {
       console.log(error);
     } 
     var dat = [];
+    var itemList = [];
+    var amountList = [];
     for (const result of results) {
-      var json = {}
-      json.item = result.item;
-      json.totalAmount = result.totalAmount;
-      console.log(json);
-      dat.push(json)
+      itemList.push(result.item);
+      amountList.push(result.totalAmount);
     }
-    console.log(dat)
+    var json = {}
+    json.item = itemList;
+    json.totalAmount = amountList;
+    console.log(json);
     res.header('Content-Type', 'application/json; charset=utf-8')
-    res.send(dat);
+    res.send(json);
   });
   connection.end();
 })
@@ -79,7 +116,6 @@ module.exports = {
   path: '/api',
   handler: app
 }
-
 
 // POST用の設定
 app.use(bodyParser.urlencoded({

@@ -64,20 +64,17 @@
           </v-row>
           <v-row>
             <v-col cols=2 md=1>
-              <v-btn block to="/menu">
-                メニューへ戻る
-              </v-btn>
-            </v-col>
-            <v-col cols=2 md=1>
               <v-btn block @click="openGraph()">
                 グラフ表示
               </v-btn>
               <graphCard ref="gra"/>
             </v-col>
             <v-col cols=2 md=1>
-              <v-btn block to="/menu/graph">
-                CSVダウンロード
-              </v-btn>
+              <VueJsonToCsv :json-data="csvData" :csv-title="filename" :labels="labels">
+                <v-btn @click="download">
+                  csvダウンロード
+                </v-btn>
+              </VueJsonToCsv>
             </v-col>
           </v-row>
           <v-row>
@@ -102,10 +99,13 @@
 <script>
 import dialogCard from '@/components/dialog'
 import graphCard from '@/components/graph'
+import VueJsonToCsv from 'vue-json-to-csv'
+
 export default {
   components: {
     dialogCard,
-    graphCard
+    graphCard,
+    VueJsonToCsv
   },
   async asyncData (context) {
     const response = await context.$axios.get('/api/mysql/getItem')
@@ -123,6 +123,21 @@ export default {
   },
   data () {
     return {
+      csvData: [
+        {
+          date: '',
+          category: '',
+          amount: '',
+          memo: ''
+        }
+      ],
+      filename: 'test',
+      labels: {
+        date: { title: '日付' },
+        category: { title: '分類' },
+        amount: { title: '金額' },
+        memo: { title: 'メモ' }
+      },
       name: '',
       email: '',
       dialog: false,
@@ -186,6 +201,26 @@ export default {
     },
     openGraph () {
       this.$refs.gra.open()
+    },
+    download () {
+      const date = new Date()
+      const Y = date.getFullYear()
+      const M = ('00' + (date.getMonth() + 1)).slice(-2)
+      const D = ('00' + date.getDate()).slice(-2)
+      this.filename = Y + M + D
+      if (this.item_data.length) {
+        this.csvData = []
+        this.item_data.forEach((data) => {
+          this.csvData.push({
+            date: data.date,
+            category: data.category,
+            amount: data.amount,
+            memo: data.memo
+          })
+        })
+      } else {
+        alert('検索していないため、空で出力されます。検索してから実行してください')
+      }
     }
   }
 }

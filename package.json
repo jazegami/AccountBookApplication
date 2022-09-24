@@ -27,6 +27,7 @@
     "vue-chartjs": "^4.1.1",
     "vue-ctk-date-time-picker": "^3.0.0-alpha.0",
     "vue-datetime": "^1.0.0-beta.14",
+    "vue-json-to-csv": "^1.1.8",
     "vue-router": "^3.4.9",
     "vuetify-datetime-picker": "^2.1.1",
     "weekstart": "^1.1.0"
