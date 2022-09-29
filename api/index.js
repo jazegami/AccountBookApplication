@@ -89,7 +89,7 @@ app.get('/mysql/graph/items', (req, res, next) => {
   var sql = '';
   var query=[];
   var ret=[];
-  sql = 'SELECT item, sum(amount) as totalAmount from accountbook_table group by item;';
+  sql = 'SELECT item, sum(amount) as totalAmount from accountbook_table group by item order by totalAmount desc;';
   console.log('実行SQL' + sql);
   connection.connect();
   connection.query(sql, function(error, results, fields){

@@ -69,7 +69,7 @@
               </v-btn>
               <graphCard ref="gra"/>
             </v-col>
-            <v-col cols=2 md=1>
+            <v-col v-if="csvflg" cols=2 md=1>
               <VueJsonToCsv :json-data="csvData" :csv-title="filename" :labels="labels">
                 <v-btn @click="download">
                   csvダウンロード
@@ -176,6 +176,15 @@ export default {
         year: '',
         month: '',
         itemClassification: ''
+      }
+    }
+  },
+  computed: {
+    csvflg () {
+      if (this.item_data.length) {
+        return true
+      } else {
+        return false
       }
     }
   },

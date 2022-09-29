@@ -14,7 +14,7 @@
       ></v-select>
       </v-col>
       <v-col>
-        <v-btn small class="elevation-18" @click="changeGraph()">
+        <v-btn @click="changeGraph()">
           グラフ切り替え
         </v-btn>
       </v-col>
@@ -48,7 +48,7 @@ export default {
       chartOptions: {
         labels: [],
         title: {
-          text: 'あなたの年齢を教えてください。',
+          text: '',
           align: 'center'
         },
         chart: {
@@ -62,7 +62,7 @@ export default {
       dialog: false,
       selectedGraph: { label: '項目毎の使用金額合計', value: '1' },
       graphSelect: [
-        { label: '項目毎の使用金額合計', value: '1' },
+        { label: '項目毎の使用金額割合（累計）', value: '1' },
         { label: '年毎の使用金額推移', value: '2' }
       ]
     }
@@ -74,20 +74,31 @@ export default {
     async changeGraph () {
       if (this.selectedGraph.value === '1') {
         const response = await this.$axios.$get('/api/mysql/graph/items', this.params)
-        console.log('1個目')
-        this.chartOptions.xaxis.categories = []
-        this.chartOptions.xaxis.categories = response.item
-        const json = {}
-        json.name = 'グラフA'
-        json.data = response.totalAmount
-        this.series = []
-        this.series.push(json)
+        this.chartOptions = {
+          ...this.chartOptions,
+          ...{
+            labels: response.item,
+            title: {
+              text: '項目毎の使用金額割合（累計）'
+            }
+          }
+        }
+        this.series = response.totalAmount
         this.graphType = 'pie'
+        this.size = '700'
       } else if (this.selectedGraph.value === '2') {
         const response = await this.$axios.$get('/api/mysql/graph/every/year', this.params)
-        console.log('2個目')
-        this.chartOptions.xaxis.categories = []
-        this.chartOptions.xaxis.categories = response.year
+        this.chartOptions = {
+          ...this.chartOptions,
+          ...{
+            xaxis: {
+              categories: response.year
+            },
+            title: {
+              text: '年毎の使用金額推移'
+            }
+          }
+        }
         const json = {}
         json.name = 'グラフB'
         json.data = response.totalAmount
@@ -98,12 +109,40 @@ export default {
     },
     async open () {
       this.dialog = true
-      const response = await this.$axios.$get('/api/mysql/graph/items', this.params)
-      this.chartOptions.labels = response.item
-      this.series = response.totalAmount
-      this.graphType = 'pie'
-      this.size = '700'
-      console.log('画面開いた')
+      if (this.selectedGraph.value === '1') {
+        const response = await this.$axios.$get('/api/mysql/graph/items', this.params)
+        this.chartOptions = {
+          ...this.chartOptions,
+          ...{
+            labels: response.item,
+            title: {
+              text: '項目毎の使用金額割合（累計）'
+            }
+          }
+        }
+        this.series = response.totalAmount
+        this.graphType = 'pie'
+        this.size = '700'
+      } else if (this.selectedGraph.value === '2') {
+        const response = await this.$axios.$get('/api/mysql/graph/every/year', this.params)
+        this.chartOptions = {
+          ...this.chartOptions,
+          ...{
+            xaxis: {
+              categories: response.year
+            },
+            title: {
+              text: '年毎の使用金額推移'
+            }
+          }
+        }
+        const json = {}
+        json.name = 'グラフB'
+        json.data = response.totalAmount
+        this.series = []
+        this.series.push(json)
+        this.graphType = 'bar'
+      }
     }
   }
 }
